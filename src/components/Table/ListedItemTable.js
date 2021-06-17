@@ -53,7 +53,7 @@ export default function CustomTable(props) {
                       {prop1.amount}
                     </TableCell>
                     <TableCell className={classes.tableCell} >
-                      {prop1.realPrice}
+                      {prop1.itemPrice}
                     </TableCell>
                     <TableCell className={classes.tableCell} >
                         <TextField onChange={(event) => {setcomissionText(event.target.value)}} value={comissionInput} style = {{width: 70}}/>

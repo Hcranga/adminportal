@@ -49,7 +49,7 @@ const styles = {
     },
 };
 
-const columns = ["Item Name", "Description", "Amount", "Real Price", "Commission", "Action"];
+const columns = ["Item Name", "Description", "Amount", "Item Price", "Commission", "Action"];
 
 const useStyles = makeStyles(styles);
 
@@ -111,7 +111,7 @@ export default function ListedItems() {
         //console.log(comissionText);
         //console.log(rowData.realPrice);
         var value1 = parseFloat(comissionText);
-        var value2 = parseFloat(rowData.realPrice);
+        var value2 = parseFloat(rowData.itemPrice);
         var priceWithComission = value1+value2;
         console.log(priceWithComission);
 
@@ -123,6 +123,12 @@ export default function ListedItems() {
                 priceWithComission: priceWithComission,
                 admin_permission: true
             }, { merge: true })
+            .then(ref => {
+                console.log('Permission Updated');
+              })
+              .catch(err => {
+                console.log("Error " + err);
+              })
         }
     }
 
