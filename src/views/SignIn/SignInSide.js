@@ -99,6 +99,10 @@ export default function SignInSide() {
         }
         else {
           console.log("Document Doesn't Exist");
+          Swal.fire({
+            icon: 'info',
+            html: 'Admin not found'
+          });
         }
       });
     }
