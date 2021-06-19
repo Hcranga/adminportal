@@ -106,6 +106,10 @@ export default function Shops() {
     })
       .catch((error) => {
         console.error("Error deleting shop: ", error);
+        Swal.fire({
+          icon: 'info',
+          title: 'Error deleting shop'
+        });
       });
   }
 
@@ -132,6 +136,10 @@ export default function Shops() {
       })
       .catch((error) => {
         console.error("Error deleting collection: ", error);
+        Swal.fire({
+          icon: 'info',
+          title: 'Error blocking shop'
+        });
       });
 
   }
@@ -156,6 +164,10 @@ export default function Shops() {
       })
       .catch((error) => {
         console.error("Error updating permission: ", error);
+        Swal.fire({
+          icon: 'info',
+          title: 'Error updating permission'
+        });
       });
   }
 

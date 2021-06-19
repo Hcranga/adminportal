@@ -126,6 +126,10 @@ export default function Riders() {
       })
       .catch((error) => {
         console.error("Error deleting rider: ", error);
+        Swal.fire({
+          icon: 'info',
+          title: 'Rider Delete failed!'
+        });
       });
   }
 
@@ -177,6 +181,10 @@ export default function Riders() {
       })
       .catch((error) => {
         console.error("Error updating permission: ", error);
+        Swal.fire({
+          icon: 'info',
+          title: 'Error updating permission'
+        });
       });
   }
 
