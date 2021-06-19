@@ -19,38 +19,22 @@ export default function Footer(props) {
         <div className={classes.left}>
           <List className={classes.list}>
             <ListItem className={classes.inlineBlock}>
-              <Link to="/admin/dashboard">Home</Link>
+              <Link to="/admin/riders">Riders</Link>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
-              <a href="#company" className={classes.block}>
-                Company
-              </a>
+              <Link to="/admin/shops">Shops</Link>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
-              <a href="#portfolio" className={classes.block}>
-                Portfolio
-              </a>
+              <Link to="/admin/promocode">Promo Codes</Link>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
-              <a href="#blog" className={classes.block}>
-                Blog
-              </a>
+              <Link to="/admin/earnings">Earnings</Link>
+            </ListItem>
+            <ListItem className={classes.inlineBlock}>
+              <Link to="/admin/listeditems">Listed Items</Link>
             </ListItem>
           </List>
         </div>
-        <p className={classes.right}>
-          <span>
-            &copy; {1900 + new Date().getYear()}{" "}
-            <a
-              href="https://www.creative-tim.com?ref=mdr-footer"
-              target="_blank"
-              className={classes.a}
-            >
-              Creative Tim
-            </a>
-            , made with love for a better web
-          </span>
-        </p>
       </div>
     </footer>
   );

@@ -17,7 +17,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import db from '../../firebaseconfig';
 import Admin from "../../layouts/Admin";
-import logo from "assets/img/icon.png";
+import icon from "assets/img/icon.png";
 
 import Swal from 'sweetalert2'
 
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    backgroundImage: "url('/assets/img/icon.png')",
+    backgroundImage: {icon},
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: 'center',
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    margin: theme.spacing(15, 8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -88,6 +88,13 @@ export default function SignInSide() {
       db.collection('admins').where("email", "==", data[0]).where("password", "==", data[1]).get().then(function (querySnapshot) {
         if (!querySnapshot.empty) {
           console.log("Document Exist");
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Welcome',
+            showConfirmButton: false,
+            timer: 2500
+          })
           ReactDOM.render(
             <BrowserRouter>
               <Switch>
@@ -155,21 +162,6 @@ export default function SignInSide() {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
           </form>
         </div>
       </Grid>
