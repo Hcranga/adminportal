@@ -18,6 +18,8 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import db from '../../firebaseconfig';
 import Admin from "../../layouts/Admin";
 
+import Swal from 'sweetalert2'
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -65,31 +67,42 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide() {
   const classes = useStyles();
   const handleSubmit = (event) => {
+
     const formData = new FormData(event.target);
     const data = [];
     event.preventDefault();
     for (let [key, value] of formData.entries()) {
-        data.push(value);
+      data.push(value);
     }
-    db.collection('admins').where("email", "==", data[0]).where("password", "==", data[1]).get().then(function(querySnapshot) {
-      if (!querySnapshot.empty) {
+
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(data[0]) === false) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Invalid Email'
+      });
+    }
+    else {
+
+      db.collection('admins').where("email", "==", data[0]).where("password", "==", data[1]).get().then(function (querySnapshot) {
+        if (!querySnapshot.empty) {
           console.log("Document Exist");
           ReactDOM.render(
             <BrowserRouter>
               <Switch>
                 <Route path="/admin" component={Admin} />
-                <Redirect from="/" to="/admin/dashboard" />
+                <Redirect from="/" to="/admin/riders" />
               </Switch>
             </BrowserRouter>,
             document.getElementById("root")
           );
-      }
-      else {
+        }
+        else {
           console.log("Document Doesn't Exist");
-      }
-  });
-    
-}
+        }
+      });
+    }
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
