@@ -55,6 +55,7 @@ export default function Customers() {
   const [shopIds, setShopIds] = useState([]);
   const [sentPromoCodeDetails, setSentPromoCodeList] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState();
+  const [tp, setTp] = useState({ label: "Select", value: "" });
   const [item, setItem] = useState({
     promoCode: "",
     minimumBill: ""
@@ -73,7 +74,7 @@ export default function Customers() {
       else {
         console.log('customers available');
         const tempDoc = querySnapshot.docs.map((doc) => {
-          return { value: doc.id,label:doc.id }
+          return { value: doc.id, label: doc.id }
         })
         setCustomerIds(tempDoc);
         console.log(tempDoc);
@@ -100,14 +101,14 @@ export default function Customers() {
       console.log("Items action error " + err);
     })
 
-    db.collection('shops').where("admin permission","==",true).get().then((querySnapshot) => {
+    db.collection('shops').where("admin permission", "==", true).get().then((querySnapshot) => {
       if (querySnapshot.empty) {
         console.log('No active shops available');
       }
       else {
         console.log('active shops available');
         const tempDoc = querySnapshot.docs.map((doc) => {
-          return { value: doc.id,label:doc.id }
+          return { value: doc.id, label: doc.id }
         })
         setShopIds(tempDoc);
         console.log(tempDoc);
@@ -124,61 +125,116 @@ export default function Customers() {
     console.log(selectedShops);
     console.log(item);
 
-    db.collection('Customer').doc(selectedCustomer).collection('Customer Details').get().then((querySnapshot) => {
-      if (querySnapshot.empty) {
-        console.log('No customer records available');
-      }
-      else {
-        var shopIdList = [];
-        for(let i=0;i<selectedShops.length;i++){
-          shopIdList.push(selectedShops[i].value);
-        }
-        console.log('customer records available');
-        const tempDoc = querySnapshot.docs.map((doc) => {
-          return { docId: doc.id, ...doc.data() }
-        })
-        const multilineString = `Congratulations! You have a Coupon from Delivo. ${item.promoCode}, You can use this coupon for shops Ids ${shopIdList}.Also your minimum bill must be ${item.minimumBill}. Happy Shopping !`;
-
-        fetch(`http://www.textit.biz/sendmsg?id=94767113128&pw=1275&to=${tempDoc[0]["Custumer's Mobile Number"]}&text=${multilineString}`, { mode: 'no-cors' }).then(function (response) {
-          console.log(response);
-          console.log("Message sent");
+    if (selectedCustomer == undefined) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Select customer'
+      });
+    }
+    else if (selectedShops.length == 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Select shop/shops'
+      });
+    }
+    else if (item.promoCode == "") {
+      Swal.fire({
+        icon: 'info',
+        title: 'Fill Promo code'
+      });
+    }
+    else if (item.minimumBill == "") {
+      Swal.fire({
+        icon: 'info',
+        title: 'Fill minimum bill'
+      });
+    }
+    else if (isNaN(item.minimumBill)) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Check minimum bill'
+      });
+    }
+    else {
+      db.collection('Customer').doc(selectedCustomer).collection('Customer Details').get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          console.log('No customer records available');
           Swal.fire({
-            icon: 'success',
-            text: 'Message Sent'
-          })
-          var itemData = {
-            "customerId":selectedCustomer,
-            "shopIds":shopIdList,
-            "promoCode":item.promoCode,
-            "minimumBill":item.minimumBill,
-            "active":false
-          }
-      
-          db.collection('promoCodes').add(itemData)
-            .then(ref => {
-              console.log('Added Promo Code with ID: ', ref.id);
-            })
-            .catch(err => {
-              console.log("Sign up error " + err);
-            })
-        })
-          .catch(function (error) {
-            console.log(error);
+            icon: 'info',
+            title: 'No customer records available'
           });
+        }
+        else {
+          var shopIdList = [];
+          for (let i = 0; i < selectedShops.length; i++) {
+            shopIdList.push(selectedShops[i].value);
+          }
+          console.log('customer records available');
+          const tempDoc = querySnapshot.docs.map((doc) => {
+            return { docId: doc.id, ...doc.data() }
+          })
+          const multilineString = `Congratulations! You have a Coupon from Delivo. Promo Code is ${item.promoCode}, You can use this coupon for shops Ids ${shopIdList}.Also your minimum bill must be ${item.minimumBill}. Happy Shopping !`;
 
-        
-      }
+          fetch(`http://www.textit.biz/sendmsg?id=94767113128&pw=1275&to=${tempDoc[0]["Custumer's Mobile Number"]}&text=${multilineString}`, { mode: 'no-cors' }).then(function (response) {
+            console.log(response);
+            console.log("Message sent");
+            Swal.fire({
+              icon: 'success',
+              text: 'Message Sent'
+            })
+            var itemData = {
+              "customerId": selectedCustomer,
+              "shopIds": shopIdList,
+              "promoCode": item.promoCode,
+              "minimumBill": item.minimumBill,
+              "active": false
+            }
 
-    }).catch(err => {
-      console.log("Items action error " + err);
-    })
+            db.collection('promoCodes').add(itemData)
+              .then(ref => {
+                console.log('Added Promo Code with ID: ', ref.id);
+                setItem({ promoCode: "", minimumBill: "" });
+                setSelectedShops([]);
+                setTp({ label: "Select", value: "" });
+                getDataFromDb();
+              })
+              .catch(err => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Promo code details adding failed'
+                });
+              })
+          })
+            .catch(function (error) {
+              console.log(error);
+              Swal.fire({
+                icon: 'error',
+                text: 'Message Sent failed'
+              })
+            });
+
+
+        }
+
+      }).catch(err => {
+        console.log("Items action error " + err);
+        Swal.fire({
+          icon: 'error',
+          text: 'Error retriving customer details'
+        })
+      })
+    }
+
+
   }
 
-  const handleCustomerChange = (e)=> {
+  const handleCustomerChange = (e) => {
     setSelectedCustomer(e.value);
+    setTp(e)
+    console.log(e);
   }
 
-  const handleShopChange = (e) =>{
+  const handleShopChange = (e) => {
     setSelectedShops(e);
   }
 
@@ -200,26 +256,28 @@ export default function Customers() {
               <p className={classes.cardCategoryWhite}>Fill Details</p>
             </CardHeader>
             <CardBody>
-            <GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                <label>
+                  <label>
                     Select Customer
                             </label>
                   <Select
                     options={customerIds}
                     onChange={handleCustomerChange}
+                    value={tp}
                     name="customers"
                     className="basic-multi-select"
                     classNamePrefix="select"
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={8}>
-                <label>
+                  <label>
                     Select Shops
                             </label>
                   <Select
-                  options={shopIds}
-                  onChange={handleShopChange}
+                    options={shopIds}
+                    onChange={handleShopChange}
+                    value={selectedShops}
                     isMulti
                     name="shops"
                     className="basic-multi-select"
@@ -259,22 +317,22 @@ export default function Customers() {
         </GridItem>
 
         <GridItem xs={12} sm={12} md={12}>
-        <Card>
-          <CardHeader color="info">
-            <h4 className={classes.cardTitleWhite}>Sent Promotions</h4>
-            <p className={classes.cardCategoryWhite}>
-              List
+          <Card>
+            <CardHeader color="info">
+              <h4 className={classes.cardTitleWhite}>Sent Promotions</h4>
+              <p className={classes.cardCategoryWhite}>
+                List
             </p>
-          </CardHeader>
-          <CardBody>
-            <TablePromotion
-              tableHeaderColor="primary"
-              tableHead={promotionTableHeadings}
-              tableData={sentPromoCodeDetails}
-            />
-          </CardBody>
-        </Card>
-      </GridItem>
+            </CardHeader>
+            <CardBody>
+              <TablePromotion
+                tableHeaderColor="primary"
+                tableHead={promotionTableHeadings}
+                tableData={sentPromoCodeDetails}
+              />
+            </CardBody>
+          </Card>
+        </GridItem>
       </GridContainer>
     </div>
   );

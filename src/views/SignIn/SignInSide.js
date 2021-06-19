@@ -17,6 +17,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import db from '../../firebaseconfig';
 import Admin from "../../layouts/Admin";
+import logo from "assets/img/icon.png";
 
 import Swal from 'sweetalert2'
 
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: "url('/assets/img/icon.png')",
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],

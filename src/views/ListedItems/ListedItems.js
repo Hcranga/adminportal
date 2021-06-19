@@ -68,6 +68,10 @@ export default function ListedItems() {
         db.collection('shops').get().then((querySnapshot) => {
             if (querySnapshot.empty) {
               console.log('No matching documents.');
+              Swal.fire({
+                icon: 'info',
+                title: 'No shops available!'
+              });
             }
             else {
               console.log('Records available');
@@ -79,6 +83,10 @@ export default function ListedItems() {
       
           }).catch(err => {
             console.log("Items action error " + err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Server error!'
+              });
           })
     }
 
@@ -117,6 +125,10 @@ export default function ListedItems() {
 
         if(comissionText == ''){
             console.log("Field empty");
+            Swal.fire({
+                icon: 'info',
+                title: 'Fill Comission'
+              });
         }
         else{
             db.collection("shops").doc(shopID).collection("Listed Items").doc(rowData.itemid).set({
@@ -125,9 +137,20 @@ export default function ListedItems() {
             }, { merge: true })
             .then(ref => {
                 console.log('Permission Updated');
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Permission Updated!',
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
               })
               .catch(err => {
                 console.log("Error " + err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Permission Update failed'
+                  });
               })
         }
     }
