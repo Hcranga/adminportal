@@ -33,6 +33,7 @@ import UserProfile from "views/UserProfile/UserProfile.js";
 import Riders from "views/Riders/Riders.js";
 import Shops from "views/Shops/Shops.js";
 import Earnings from "views/Earnings/Earnings.js";
+import ShopEarnings from "views/Earnings/ShopEarnings.js";
 import ListedItems from "views/ListedItems/ListedItems.js";
 import Customers from "views/Customers/Customers.js";
 import TableList from "views/TableList/TableList.js";
@@ -68,10 +69,17 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/earnings",
-    name: "Earnings",
+    path: "/riderearnings",
+    name: "Rider Earnings",
     icon: AttachMoneyIcon,
     component: Earnings,
+    layout: "/admin",
+  },
+  {
+    path: "/shopearnings",
+    name: "Shop Earnings",
+    icon: AttachMoneyIcon,
+    component: ShopEarnings,
     layout: "/admin",
   },
 
