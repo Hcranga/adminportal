@@ -44,7 +44,7 @@ const styles = {
   },
 };
 
-const shopdailycolumns = ["Shop ID", "Shop Earnings", "Blackgen Earnings"];
+const shopcolumns = ["Shop ID", "Shop Earnings", "Blackgen Earnings"];
 
 const useStyles = makeStyles(styles);
 
@@ -52,8 +52,10 @@ export default function Earnings() {
   const classes = useStyles();
 
   const [shopDailyEarningList, setShopDailyEarningList] = useState([]);
+  const [shopMonthlyEarningList, setShopMonthlyEarningList] = useState([]);
 
   useEffect(() => {
+    //daily earnings
     db.collection('shop_daily_earnings').get().then((querySnapshot) => {
         if (querySnapshot.empty) {
           console.log('No daily earnings available');
@@ -68,6 +70,31 @@ export default function Earnings() {
             return { id: doc.id, ...doc.data() }
           })
           setShopDailyEarningList(tempDoc);
+        }
+  
+      }).catch(err => {
+        console.log("Items action error " + err);
+        Swal.fire({
+            icon: 'info',
+            title: 'Data retriving failed'
+          });
+      })
+
+      //monthly earnings
+      db.collection('shop_monthly_earnings').get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          console.log('No monthly earnings available');
+          Swal.fire({
+            icon: 'info',
+            title: 'No monthly earnings available'
+          });
+        }
+        else {
+          console.log('monthly earnings available');
+          const tempDoc = querySnapshot.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() }
+          })
+          setShopMonthlyEarningList(tempDoc);
         }
   
       }).catch(err => {
@@ -92,8 +119,27 @@ export default function Earnings() {
           <CardBody>
             <TableEarning
               tableHeaderColor="primary"
-              tableHead={shopdailycolumns}
+              tableHead={shopcolumns}
               tableData={shopDailyEarningList}
+
+            />
+          </CardBody>
+        </Card>
+      </GridItem>
+
+      <GridItem xs={12} sm={12} md={12}>
+        <Card>
+          <CardHeader color="warning">
+            <h4 className={classes.cardTitleWhite}>Shop</h4>
+            <p className={classes.cardCategoryWhite}>
+              Monthly Earnings
+            </p>
+          </CardHeader>
+          <CardBody>
+            <TableEarning
+              tableHeaderColor="primary"
+              tableHead={shopcolumns}
+              tableData={shopMonthlyEarningList}
 
             />
           </CardBody>
