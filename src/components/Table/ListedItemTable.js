@@ -19,7 +19,7 @@ const useStyles = makeStyles(styles);
 
 export default function CustomTable(props) {
   const classes = useStyles();
-  const { tableHead, tableData, tableHeaderColor, buttonAction, setcomissionText, comissionInput } = props;
+  const { tableHead, tableData, tableHeaderColor, buttonAction, setcomissionText } = props;
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -56,7 +56,7 @@ export default function CustomTable(props) {
                       {prop1.itemPrice}
                     </TableCell>
                     <TableCell className={classes.tableCell} >
-                        <TextField onChange={(event) => {setcomissionText(event.target.value)}} value={comissionInput} style = {{width: 70}}/>
+                        <TextField onChange={(event) => {setcomissionText(event.target.value)}} style = {{width: 70}}/>
                     </TableCell>
                     <TableCell className={classes.tableCell} >
                       <Button onClick={() => buttonAction(prop1)} color="danger" size="sm" ret>Update</Button>

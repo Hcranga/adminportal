@@ -67,32 +67,32 @@ export default function ListedItems() {
     const getDataFromDb = () => {
         db.collection('shops').get().then((querySnapshot) => {
             if (querySnapshot.empty) {
-              console.log('No matching documents.');
-              Swal.fire({
-                icon: 'info',
-                title: 'No shops available!'
-              });
+                console.log('No matching documents.');
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No shops available!'
+                });
             }
             else {
-              console.log('Records available');
-              const tempDoc = querySnapshot.docs.map((doc) => {
-                return { id: doc.id, ...doc.data() }
-              })
-              setShopDetails(tempDoc)
+                console.log('Records available');
+                const tempDoc = querySnapshot.docs.map((doc) => {
+                    return { id: doc.id, ...doc.data() }
+                })
+                setShopDetails(tempDoc)
             }
-      
-          }).catch(err => {
+
+        }).catch(err => {
             console.log("Items action error " + err);
             Swal.fire({
                 icon: 'error',
                 title: 'Server error!'
-              });
-          })
+            });
+        })
     }
 
-    const getListedItemForShop = (event,value) => {
-        
-        if(value){
+    const getListedItemForShop = (event, value) => {
+
+        if (value) {
             setcomissionText('');
             setShopId(value.id);
             db.collection('shops').doc(value.id).collection("Listed Items").where("admin_permission", "==", false).get().then((querySnapshot) => {
@@ -101,9 +101,9 @@ export default function ListedItems() {
                     Swal.fire({
                         icon: 'info',
                         title: 'No items for the shop!'
-                      });
+                    });
                 }
-                else{
+                else {
                     console.log('listed items avalibale for', value.id);
                     const tempDoc = querySnapshot.docs.map((doc) => {
                         return { itemid: doc.id, ...doc.data() }
@@ -115,43 +115,47 @@ export default function ListedItems() {
         }
     }
 
-    const buttonclickaction = (rowData) => {
-        //console.log(comissionText);
-        //console.log(rowData.realPrice);
-        var value1 = parseFloat(comissionText);
-        var value2 = parseFloat(rowData.itemPrice);
-        var priceWithComission = value1+value2;
-        console.log(priceWithComission);
+    const comissionTextHandler = (event) => {
+        console.log(event);
+        setcomissionText(event);
+    }
 
-        if(comissionText == ''){
+    const buttonclickaction = (rowData) => {
+
+        if (isNaN(comissionText)) {
             console.log("Field empty");
             Swal.fire({
                 icon: 'info',
-                title: 'Fill Comission'
-              });
+                title: 'Check commission  field'
+            });
         }
-        else{
+        else {
+            console.log(comissionText);
+            var value1 = parseFloat(comissionText);
+            var value2 = parseFloat(rowData.itemPrice);
+            var priceWithComission = value1 + value2;
+            console.log(priceWithComission);
             db.collection("shops").doc(shopID).collection("Listed Items").doc(rowData.itemid).set({
                 priceWithComission: priceWithComission,
                 admin_permission: true
             }, { merge: true })
-            .then(ref => {
-                console.log('Permission Updated');
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Permission Updated!',
-                    showConfirmButton: false,
-                    timer: 1500
-                  });
-              })
-              .catch(err => {
-                console.log("Error " + err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Permission Update failed'
-                  });
-              })
+                .then(ref => {
+                    console.log('Permission Updated');
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Permission Updated!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .catch(err => {
+                    console.log("Error " + err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Permission Update failed'
+                    });
+                })
         }
     }
 
@@ -159,7 +163,7 @@ export default function ListedItems() {
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
                 <Autocomplete
-                    onChange={(event, value) => getListedItemForShop(event,value)}
+                    onChange={(event, value) => getListedItemForShop(event, value)}
                     id="combo-box-demo"
                     options={allshopDetails}
                     getOptionLabel={(option) => option.id}
@@ -181,8 +185,7 @@ export default function ListedItems() {
                             tableData={listedItemDetails}
 
                             buttonAction={buttonclickaction}
-                            setcomissionText={setcomissionText}
-                            comissionInput={comissionText}
+                            setcomissionText={comissionTextHandler}
                         />
                     </CardBody>
                 </Card>
