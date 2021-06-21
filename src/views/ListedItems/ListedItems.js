@@ -62,7 +62,7 @@ export default function ListedItems() {
 
     useEffect(() => {
         getDataFromDb();
-    }, []);
+    }, [listedItemDetails]);
 
     const getDataFromDb = () => {
         db.collection('shops').get().then((querySnapshot) => {

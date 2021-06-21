@@ -56,7 +56,7 @@ export default function CustomTable(props) {
                       {prop1.itemPrice}
                     </TableCell>
                     <TableCell className={classes.tableCell} >
-                        <TextField onChange={(event) => {setcomissionText(event.target.value)}} style = {{width: 70}}/>
+                        <TextField type="number" onChange={(event) => {setcomissionText(event.target.value)}} style = {{width: 70}}/>
                     </TableCell>
                     <TableCell className={classes.tableCell} >
                       <Button onClick={() => buttonAction(prop1)} color="danger" size="sm" ret>Update</Button>
